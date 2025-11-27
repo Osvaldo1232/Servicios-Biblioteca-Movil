@@ -76,27 +76,6 @@ public class SecurityConfig {
                     "/v3/api-docs.json", 
                     "/Autenticacion/login",
                     "/usuarios/**",
-                    "/grupos/**",
-                    "/grados/**",
-                    "/materias/**",
-                    "/campoFormativo/**",
-                    "/ciclosescolares/**",
-                    "/alumnos/**",
-                    "/Trimestres/**",
-                    "/asignacion/**",
-                    "/inscripcion/**",
-                    "/asignacion-docente/**",
-                    
-                    "/calificacion/**",
-                    "/calificaciones/**",
-                    "/calificaciones-finales/**",
-                    "/Tutor/**",
-                   
-                    "/AlumnoTutor/**",
-                    "/Profesores/**",
-                    
-                    
-                    "/usuarios/**",
                     "/libros/**",
                     "/categorias/**",
                     "/autores/**",
@@ -125,8 +104,19 @@ public class SecurityConfig {
             "https://unknown-corrie-utsemintegradora-b23357e2.koyeb.app",
             "https://pleasant-sara-utsemintegradora-0944b8c7.koyeb.app"
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
+
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+
+        config.setAllowedHeaders(List.of(
+            "Origin",
+            "Content-Type",
+            "Accept",
+            "Authorization",
+            "X-Requested-With"
+        ));
+
+        config.setExposedHeaders(List.of("Authorization"));
+
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
@@ -134,6 +124,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 
     // OpenAPI para Swagger con HTTPS
     @Bean
