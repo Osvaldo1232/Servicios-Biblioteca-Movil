@@ -15,9 +15,9 @@
 
   <groupId>com.primaria.app</groupId>
   <artifactId>Servicios</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>Servicios</name>
-  <description>Servicios de la escuela</description>
+  <version>0.0.1-API</version>
+  <name>API</name>
+  <description>API UTSEM</description>
   <packaging>jar</packaging>
 
   <properties>
