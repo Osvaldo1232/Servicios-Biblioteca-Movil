@@ -21,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.primaria.app.Service.UsuarioService;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.servers.Server;
 
 import java.util.List;
 
@@ -121,7 +122,7 @@ public class SecurityConfig {
             "http://localhost:4200",
             "http://localhost:8100",
             "http://localhost:8000",
-            "https://unusual-sharyl-utsemintegradora-3bae85c1.koyeb.app",
+            "https://jittery-duck-utsemintegradora-0dfaf147.koyeb.app",
             "https://pleasant-sara-utsemintegradora-0944b8c7.koyeb.app"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"));
@@ -135,7 +136,14 @@ public class SecurityConfig {
     }
 
     // OpenAPI para Swagger con HTTPS
- 
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .servers(List.of(
+                    new Server().url("https://jittery-duck-utsemintegradora-0dfaf147.koyeb.app")
+                ));
+    }
+    
     // AuthenticationManager para poder usarlo en controladores si se necesita
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
