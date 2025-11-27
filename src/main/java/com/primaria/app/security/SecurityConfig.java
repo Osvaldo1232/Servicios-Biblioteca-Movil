@@ -122,7 +122,7 @@ public class SecurityConfig {
             "http://localhost:4200",
             "http://localhost:8100",
             "http://localhost:8000",
-            "https://jittery-duck-utsemintegradora-0dfaf147.koyeb.app",
+            "https://unknown-corrie-utsemintegradora-b23357e2.koyeb.app",
             "https://pleasant-sara-utsemintegradora-0944b8c7.koyeb.app"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"));
@@ -140,7 +140,7 @@ public class SecurityConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .servers(List.of(
-                    new Server().url("https://jittery-duck-utsemintegradora-0dfaf147.koyeb.app")
+                    new Server().url("https://unknown-corrie-utsemintegradora-b23357e2.koyeb.app")
                 ));
     }
     
