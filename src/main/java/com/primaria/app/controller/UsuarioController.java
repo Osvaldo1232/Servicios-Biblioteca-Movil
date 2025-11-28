@@ -1,9 +1,8 @@
 package com.primaria.app.controller;
 
 import com.primaria.app.DTO.AdministradorDTO;
-import com.primaria.app.DTO.DirectorDTO;
-import com.primaria.app.DTO.EstudianteDTO;
-import com.primaria.app.DTO.ProfesorDTO;
+import com.primaria.app.DTO.AlumnoDTO;
+import com.primaria.app.DTO.EmpleadoDTO;
 import com.primaria.app.Model.*;
 import com.primaria.app.Service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,10 +22,10 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @PostMapping("/estudiante")
-    @Operation(summary = "RF4.5 Registrar Estudiante")
-    public ResponseEntity<?> registrarEstudiante(@RequestBody EstudianteDTO dto) {
-        Estudiante estudiante = new Estudiante();
+    @PostMapping("/alumno")
+    @Operation(summary = "Registrar Alumno")
+    public ResponseEntity<?> registrarEstudiante(@RequestBody AlumnoDTO dto) {
+        Alumno estudiante = new Alumno();
         estudiante.setNombre(dto.getNombre());
         estudiante.setApellidoMaterno(dto.getApellidoMaterno());
         estudiante.setApellidoPaterno(dto.getApellidoPaterno());
@@ -34,52 +33,48 @@ public class UsuarioController {
         estudiante.setEmail(dto.getEmail());
         estudiante.setPassword(dto.getPassword());
         estudiante.setMatricula(dto.getMatricula());
-        estudiante.setCurp(dto.getCurp());
-        estudiante.setRol(Rol.ESTUDIANTE);
-        //  Nuevos campos
+        estudiante.setRol(Rol.ALUMNO);
+       
         estudiante.setFechaNacimiento(dto.getFechaNacimiento());
         estudiante.setSexo(dto.getSexo());
 
         usuarioService.save(estudiante);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Estudiante registrado exitosamente");
+        response.put("message", "Alumno registrado exitosamente");
         response.put("id", estudiante.getId());
 
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/profesor")
-    @Operation(summary = "RF4.1 Registrar Profesor")
-    public ResponseEntity<?> registrarProfesor(@RequestBody ProfesorDTO dto) {
-        Profesor profesor = new Profesor();
+    @PostMapping("/empleado")
+    @Operation(summary = "Registrar empleado")
+    public ResponseEntity<?> registrarProfesor(@RequestBody EmpleadoDTO dto) {
+        Empleado profesor = new Empleado();
         profesor.setNombre(dto.getNombre());
         profesor.setApellidoMaterno(dto.getApellidoMaterno());
        profesor.setApellidoPaterno(dto.getApellidoPaterno());
        profesor.setEstatus(dto.getEstatus());
         profesor.setEmail(dto.getEmail());
         profesor.setPassword(dto.getPassword());
-        profesor.setRol(Rol.PROFESOR);
+        profesor.setRol(Rol.EMPLEADO);
         
-        //  Nuevos campos
         profesor.setFechaNacimiento(dto.getFechaNacimiento());
         profesor.setSexo(dto.getSexo());
-        profesor.setEspecialidad(dto.getEspecialidad());
        
         profesor.setTelefono(dto.getTelefono());
-        profesor.setRfc(dto.getRfc());
         profesor.setClavePresupuestal(dto.getClavePresupuestal());
         usuarioService.save(profesor);
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Profesor registrado exitosamente");
+        response.put("message", "Empleado registrado exitosamente");
         response.put("id", profesor.getId());
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/director")
-    @Operation(summary = "Registrar Director")
-    public ResponseEntity<?> registrarDirector(@RequestBody DirectorDTO dto) {
-        Director director = new Director();
+    @PostMapping("/administrador")
+    @Operation(summary = "Registrar Administrador")
+    public ResponseEntity<?> registrarDirector(@RequestBody AdministradorDTO dto) {
+        Administrador director = new Administrador();
         director.setNombre(dto.getNombre());
         director.setApellidoMaterno(dto.getApellidoMaterno());
         director.setApellidoPaterno(dto.getApellidoPaterno());
@@ -90,24 +85,48 @@ public class UsuarioController {
         director.setTelefono(dto.getTelefono());
         
         director.setDepartamento(dto.getDepartamento());
-        director.setRol(Rol.DIRECTOR);
+        director.setRol(Rol.ADMINISTRADOR);
 
-        //  Nuevos campos
         director.setFechaNacimiento(dto.getFechaNacimiento());
         director.setSexo(dto.getSexo());
 
         usuarioService.save(director);
-        return ResponseEntity.ok("Director registrado exitosamente");
+        return ResponseEntity.ok("Administrador registrado exitosamente");
     }
     
-    @Operation(summary = "RF2.1 Obtener usuario por ID con detalles según el rol")
+    
+    @PostMapping("/profesor")
+    @Operation(summary = "Registrar profesor")
+    public ResponseEntity<?> registrarDocente(@RequestBody EmpleadoDTO dto) {
+        Empleado profesor = new Empleado();
+        profesor.setNombre(dto.getNombre());
+        profesor.setApellidoMaterno(dto.getApellidoMaterno());
+       profesor.setApellidoPaterno(dto.getApellidoPaterno());
+       profesor.setEstatus(dto.getEstatus());
+        profesor.setEmail(dto.getEmail());
+        profesor.setPassword(dto.getPassword());
+        profesor.setRol(Rol.MAESTRO);
+        
+        profesor.setFechaNacimiento(dto.getFechaNacimiento());
+        profesor.setSexo(dto.getSexo());
+       
+        profesor.setTelefono(dto.getTelefono());
+        profesor.setClavePresupuestal(dto.getClavePresupuestal());
+        usuarioService.save(profesor);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Profesor registrado exitosamente");
+        response.put("id", profesor.getId());
+        return ResponseEntity.ok(response);
+    }
+    
+    @Operation(summary = "Obtener usuario por ID con detalles según el rol")
     @GetMapping("/BuscarUsuario/{id}")
     public ResponseEntity<?> obtenerPorId(@PathVariable String id) {
         Object usuario = usuarioService.buscarUsuarioPorId(id);
         return ResponseEntity.ok(usuario);
     }
     
-    @Operation(summary = "RF4.3  RF4.7 Actualizar estatus de un usuario")
+    @Operation(summary = " Actualizar estatus de un usuario")
    
     @PatchMapping("/{id}/estatus")
     public ResponseEntity<String> actualizarEstatus(

@@ -1,9 +1,8 @@
 package com.primaria.app.Model;
 
 public enum Rol {
-	 ESTUDIANTE,
-	    PROFESOR,
+	 ALUMNO,
 	    EMPLEADO,
-	    DIRECTOR,
-	    ADMINISTRADOR
+	    ADMINISTRADOR,
+	    MAESTRO
 }

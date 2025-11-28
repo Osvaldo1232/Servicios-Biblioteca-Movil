@@ -9,8 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.primaria.app.Model.Estatus;
-import com.primaria.app.Model.Estudiante;
-import com.primaria.app.Model.Profesor;
+import com.primaria.app.Model.Alumno;
+import com.primaria.app.Model.Empleado;
 import com.primaria.app.Model.Usuario;
 import com.primaria.app.exception.BusinessException;
 import com.primaria.app.repository.UsuarioRepository;
@@ -27,38 +27,28 @@ public class UsuarioService {
     }
 
     public Usuario save(Usuario usuario) {
-        List<String> errores = new ArrayList<>(); // 🧮 Lista para acumular errores
+        List<String> errores = new ArrayList<>(); 
 
-        // 🔍 Validar correo duplicado
         if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
             errores.add("El correo ya está en uso");
         }
 
-        // 🔍 Validar matrícula si es estudiante
-        if (usuario instanceof Estudiante estudiante) {
+        if (usuario instanceof Alumno estudiante) {
             boolean existe = usuarioRepository.findAll().stream()
-                    .filter(u -> u instanceof Estudiante)
-                    .map(u -> (Estudiante) u)
+                    .filter(u -> u instanceof Alumno)
+                    .map(u -> (Alumno) u)
                     .anyMatch(u -> u.getMatricula().equalsIgnoreCase(estudiante.getMatricula()));
             if (existe) {
                 errores.add("La matrícula ya está en uso");
             }
         }
 
-        // 🔍 Validar RFC y Clave Presupuestal si es profesor
-        if (usuario instanceof Profesor profesor) {
-            boolean rfcExiste = usuarioRepository.findAll().stream()
-                    .filter(u -> u instanceof Profesor)
-                    .map(u -> (Profesor) u)
-                    .anyMatch(u -> u.getRfc() != null && u.getRfc().equalsIgnoreCase(profesor.getRfc()));
-
-            if (rfcExiste) {
-                errores.add("El RFC ya está en uso");
-            }
+        if (usuario instanceof Empleado profesor) {
+          
 
             boolean claveExiste = usuarioRepository.findAll().stream()
-                    .filter(u -> u instanceof Profesor)
-                    .map(u -> (Profesor) u)
+                    .filter(u -> u instanceof Empleado)
+                    .map(u -> (Empleado) u)
                     .anyMatch(u -> u.getClavePresupuestal() != null &&
                                    u.getClavePresupuestal().equalsIgnoreCase(profesor.getClavePresupuestal()));
 
@@ -67,13 +57,11 @@ public class UsuarioService {
             }
         }
 
-        // 🚨 Si hubo errores, los acumulamos en un solo mensaje
         if (!errores.isEmpty()) {
             String mensaje = String.join(" | ", errores);
             throw new BusinessException(1000, "Errores de validación: " + mensaje);
         }
 
-        // 🔐 Hashear la contraseña antes de guardar
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return usuarioRepository.save(usuario);
     }

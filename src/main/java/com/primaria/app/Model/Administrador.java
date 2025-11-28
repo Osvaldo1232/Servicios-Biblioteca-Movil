@@ -1,12 +1,15 @@
-package com.primaria.app.DTO;
+package com.primaria.app.Model;
 
-public class AdministradorDTO extends UsuarioDTO {
+
+import jakarta.persistence.Entity;
+
+@Entity
+public class Administrador extends Usuario {
 
     private String departamento;
-
     private String telefono;
-    // Getters y Setters
 
+    // Getters y Setters
     public String getDepartamento() {
         return departamento;
     }
@@ -14,7 +17,7 @@ public class AdministradorDTO extends UsuarioDTO {
     public void setDepartamento(String departamento) {
         this.departamento = departamento;
     }
-    
+
     public String getTelefono() {
         return telefono;
     }
