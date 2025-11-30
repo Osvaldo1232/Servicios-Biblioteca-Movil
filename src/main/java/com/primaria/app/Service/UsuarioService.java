@@ -3,12 +3,16 @@ package com.primaria.app.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.primaria.app.Model.Estatus;
+import com.primaria.app.Model.Rol;
+import com.primaria.app.DTO.LibroActivoDTO;
+import com.primaria.app.DTO.UsuarioInfoDTO;
 import com.primaria.app.Model.Alumno;
 import com.primaria.app.Model.Empleado;
 import com.primaria.app.Model.Usuario;
@@ -119,5 +123,39 @@ public class UsuarioService {
             return true;
         }
         return false;
+    }
+    
+    public UsuarioInfoDTO obtenerInfoUsuarioPorId(String id) {
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        String nombre = usuario.getNombre();
+
+        String nombreCompleto = usuario.getNombre() + " " +
+                                usuario.getApellidoPaterno() + " " +
+                                usuario.getApellidoMaterno();
+
+        String rol = usuario.getRol().name(); // Enum a String
+
+        return new UsuarioInfoDTO(nombre, nombreCompleto, rol);
+    }
+    
+    
+    
+    public List<Usuario> obtenerAlumnos() {
+        return usuarioRepository.findByRol(Rol.ALUMNO);
+    }
+
+    public List<LibroActivoDTO> obtenerUsuariosActivos() {
+
+        List<Usuario> usuarios = usuarioRepository.findByEstatus(Estatus.ACTIVO);
+
+        return usuarios.stream()
+                .map(u -> new LibroActivoDTO(
+                        u.getId(),
+                        u.getNombre() + " " + u.getApellidoPaterno() + " " + u.getApellidoMaterno()
+                ))
+                .collect(Collectors.toList());
     }
 }

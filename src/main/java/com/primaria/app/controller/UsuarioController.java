@@ -3,11 +3,14 @@ package com.primaria.app.controller;
 import com.primaria.app.DTO.AdministradorDTO;
 import com.primaria.app.DTO.AlumnoDTO;
 import com.primaria.app.DTO.EmpleadoDTO;
+import com.primaria.app.DTO.UsuarioInfoDTO;
 import com.primaria.app.Model.*;
 import com.primaria.app.Service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
+import java.util.List;
+import com.primaria.app.DTO.LibroActivoDTO;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -141,5 +144,22 @@ public class UsuarioController {
         }
     }
     
+    @Operation(
+            summary = "Obtiene información del usuario por ID",
+            description = "Devuelve el nombre, nombre completo y rol de un usuario utilizando su ID."
+    )
+    @GetMapping("/info/{id}")
+    public UsuarioInfoDTO obtenerInfoUsuario(@PathVariable String id) {
+        return usuarioService.obtenerInfoUsuarioPorId(id);
+    }
     
+    
+    @Operation(
+            summary = "Obtener usuarios activos",
+            description = "Regresa una lista con el ID y el nombre completo de los usuarios con estatus ACTIVO."
+        )
+        @GetMapping("/activos")
+        public List<LibroActivoDTO> listarUsuariosActivos() {
+            return usuarioService.obtenerUsuariosActivos();
+        }
 }

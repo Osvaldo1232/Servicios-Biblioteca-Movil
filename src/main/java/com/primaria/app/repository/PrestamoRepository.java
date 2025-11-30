@@ -37,5 +37,5 @@ public interface PrestamoRepository extends JpaRepository<Prestamo, String> {
     ORDER BY SUM(p.cantidad) DESC
     """)
 List<LibrosMasPrestadosDTO> obtenerTop10LibrosMasPrestados();
-
+	 List<Prestamo> findByUsuarioId(String usuarioId);
 }

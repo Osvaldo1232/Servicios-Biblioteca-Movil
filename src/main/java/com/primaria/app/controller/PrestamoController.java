@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import com.primaria.app.DTO.LibrosMasPrestadosDTO;
 import com.primaria.app.DTO.PrestamoDTO;
 import com.primaria.app.DTO.PrestamoDetalleDTO;
+import com.primaria.app.DTO.PrestamoUsuarioDTO;
 import com.primaria.app.DTO.PrestamosResumenDTO;
 import com.primaria.app.Model.EstatusPrestamo;
 import com.primaria.app.Service.PrestamoService;
@@ -124,6 +125,7 @@ public class PrestamoController {
             @RequestParam(required = false) String usuarioNombre,
             @RequestParam(required = false) String libroTitulo,
             @RequestParam(required = false) EstatusPrestamo estatus
+            
     ) {
         return ResponseEntity.ok(
                 prestamoService.filtrarPrestamos(fechaPrestamo, fechaDevolucion, usuarioNombre, libroTitulo, estatus)
@@ -154,6 +156,25 @@ public class PrestamoController {
     @PutMapping("/confirmar-apartado/{id}")
     public ResponseEntity<PrestamoDTO> confirmarApartado(@PathVariable String id) {
         return ResponseEntity.ok(prestamoService.confirmarApartado(id));
+    }
+
+    @GetMapping("/usuario/{usuarioId}")
+    @Operation(
+            summary = "Obtener préstamos por usuario",
+            description = "Regresa título, imagen, cantidad, estatus, fechas y autores del libro prestado."
+    )
+    public List<PrestamoUsuarioDTO> obtenerPrestamosUsuario(@PathVariable String usuarioId) {
+        return prestamoServices.obtenerPrestamosPorUsuario(usuarioId);
+    }
+    
+    
+    @PutMapping("/cancelar-prestamo/{id}")
+    @Operation(
+            summary = "cancelar prestamos",
+            description = "Cancelar Prestamos"
+    )
+    public ResponseEntity<PrestamoDTO> cancelarPrestamo(@PathVariable String id) {
+        return ResponseEntity.ok(prestamoService.cancelarPrestamo(id));
     }
 
 }

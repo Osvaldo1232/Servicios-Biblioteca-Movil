@@ -17,10 +17,16 @@ public interface PrestamoService {
     
     PrestamoDTO confirmarApartado(String prestamoId);
 
+    PrestamoDTO cancelarPrestamo(String prestamoId);
+    
     List<PrestamoDetalleDTO> filtrarPrestamos(LocalDate fechaPrestamo,
                                               LocalDate fechaDevolucion,
                                               String usuarioNombre,
                                               String libroTitulo,
                                               EstatusPrestamo estatus);
     void actualizarEstatusVencidos();                      // marcar vencidos (cron o manual)
+    
+    
+    
+    
 }

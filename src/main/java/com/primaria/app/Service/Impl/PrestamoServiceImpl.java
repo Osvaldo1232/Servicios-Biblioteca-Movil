@@ -237,4 +237,29 @@ public class PrestamoServiceImpl implements PrestamoService {
                 p.getEstatus()
         );
     }
+    @Transactional
+    public PrestamoDTO cancelarPrestamo(String prestamoId) {
+        Prestamo prestamo = prestamoRepository.findById(prestamoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Préstamo no encontrado"));
+
+        // Solo se pueden cancelar préstamos APARTADOS o PRESTADOS antes de ser devueltos
+        if (prestamo.getEstatus() == EstatusPrestamo.DEVUELTO || prestamo.getEstatus() == EstatusPrestamo.VENCIDO) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No se puede cancelar un préstamo ya devuelto o vencido");
+        }
+
+        // Devolver las copias al inventario
+        Libro libro = prestamo.getLibro();
+        int cantidadPendiente = prestamo.getCantidad() - prestamo.getCantidadDevuelta();
+        libro.setCopiasDisponibles(libro.getCopiasDisponibles() + cantidadPendiente);
+        libroRepository.save(libro);
+
+        // Cambiar estatus a CANCELADO (puedes agregarlo en tu enum EstatusPrestamo)
+        prestamo.setEstatus(EstatusPrestamo.CANCELADO);
+
+        // Guardar el préstamo actualizado
+        Prestamo actualizado = prestamoRepository.save(prestamo);
+
+        return convertirADTO(actualizado);
+    }
+
 }

@@ -4,6 +4,7 @@ import com.primaria.app.DTO.CarreraDTO;
 import com.primaria.app.DTO.LibroActivoDTO;
 import com.primaria.app.Model.Carrera;
 import com.primaria.app.Model.Estatus;
+import com.primaria.app.exception.ApiException;
 import com.primaria.app.repository.CarreraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,10 @@ public class CarreraService {
     @Autowired
     private CarreraRepository carreraRepository;
 
-    // Crear nueva carrera (sin repetir nombre)
     public CarreraDTO crearCarrera(CarreraDTO dto) {
         Optional<Carrera> existente = carreraRepository.findByNombreIgnoreCase(dto.getNombre());
         if (existente.isPresent()) {
-            throw new RuntimeException("Ya existe una carrera con el nombre: " + dto.getNombre());
+            throw new ApiException("Ya existe una carrera con el nombre: " + dto.getNombre(), 400);
         }
 
         Carrera carrera = new Carrera();
@@ -33,24 +33,24 @@ public class CarreraService {
         return convertirADTO(carrera);
     }
 
-    // Actualizar carrera (nombre o estatus)
     public CarreraDTO actualizarCarrera(String id, CarreraDTO dto) {
         Carrera carrera = carreraRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Carrera no encontrada con ID: " + id));
+                .orElseThrow(() -> new ApiException("Carrera no encontrada con ID: " + id, 404));
 
-        // Si cambia el nombre, validar que no exista otro igual
         if (!carrera.getNombre().equalsIgnoreCase(dto.getNombre())) {
             Optional<Carrera> existente = carreraRepository.findByNombreIgnoreCase(dto.getNombre());
             if (existente.isPresent()) {
-                throw new RuntimeException("Ya existe una carrera con el nombre: " + dto.getNombre());
+                throw new ApiException("Ya existe una carrera con el nombre: " + dto.getNombre(), 400);
             }
         }
 
         carrera.setNombre(dto.getNombre());
         carrera.setEstatus(dto.getEstatus());
         carrera = carreraRepository.save(carrera);
+
         return convertirADTO(carrera);
     }
+
 
     // Cambiar estatus
     public CarreraDTO cambiarEstatus(String id, Estatus nuevoEstatus) {

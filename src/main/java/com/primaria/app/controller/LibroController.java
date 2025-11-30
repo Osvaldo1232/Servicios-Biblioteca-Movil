@@ -3,8 +3,10 @@ package com.primaria.app.controller;
 import com.primaria.app.DTO.LibroActivoDTO;
 import com.primaria.app.DTO.LibroCategoriaDTO;
 import com.primaria.app.DTO.LibroDTO;
+import com.primaria.app.DTO.LibroListadoDTO;
 import com.primaria.app.Service.LibroService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,6 +71,18 @@ public class LibroController {
     @GetMapping("/activosl")
     public List<LibroActivoDTO> obtenerLibrosActivos() {
         return libroService.obtenerLibrosActivos();
+    }
+    
+    @GetMapping("/LibrosActivos")
+    @Operation(
+            summary = "Listar libros activos",
+            description = "Devuelve solo libros activos. Puedes enviar un filtro por título opcional."
+    )
+    public List<LibroListadoDTO> listarLibrosActivos(
+            @Parameter(description = "Título a filtrar (opcional)")
+            @RequestParam(required = false) String titulo
+    ) {
+        return libroService.listarLibrosActivos(titulo);
     }
 }
 

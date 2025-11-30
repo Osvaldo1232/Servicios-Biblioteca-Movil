@@ -3,6 +3,7 @@ package com.primaria.app.Service;
 import com.primaria.app.DTO.LibroActivoDTO;
 import com.primaria.app.DTO.LibroCategoriaDTO;
 import com.primaria.app.DTO.LibroDTO;
+import com.primaria.app.DTO.LibroListadoDTO;
 import com.primaria.app.Model.Autores;
 import com.primaria.app.Model.Categoria;
 import com.primaria.app.Model.Estatus;
@@ -36,33 +37,39 @@ public class LibroService {
         this.modelMapper = modelMapper;
     }
 
-  public List<LibroCategoriaDTO> listarTodos() {
+
+
+public List<LibroCategoriaDTO> listarTodos() {
     return libroRepository.findAll()
             .stream()
             .map(libro -> new LibroCategoriaDTO(
                     libro.getId(),
                     libro.getTitulo(),
 
-                    // Lista de nombres de autores
                     libro.getAutores().stream()
                             .map(a -> a.getNombre() + " " + a.getApellidoPaterno())
                             .collect(Collectors.toList()),
 
-                    // Lista de IDs de autores  <-- NUEVO
                     libro.getAutores().stream()
                             .map(a -> a.getId())
                             .collect(Collectors.toList()),
 
                     libro.getAnioPublicacion(),
                     libro.getEditorial(),
+                    libro.getTotalCopias(),
                     libro.getCopiasDisponibles(),
                     libro.getCategoria().getId(),
                     libro.getCategoria().getNombre(),
-                    libro.getEstatus().name()
+                    libro.getEstatus().name(),
+
+                    libro.getImagen() != null
+                            ? Base64.getEncoder().encodeToString(libro.getImagen())   // <-- CONVERSIÓN
+                            : null,
+
+                    libro.getSinopsis()
             ))
             .collect(Collectors.toList());
 }
-
 
 
     // Obtener libro por ID
@@ -213,5 +220,30 @@ public class LibroService {
                 .stream()
                 .map(libro -> new LibroActivoDTO(libro.getId(), libro.getTitulo()))
                 .toList();
+    }
+    
+    
+    public List<LibroListadoDTO> listarLibrosActivos(String filtroTitulo) {
+
+        List<Libro> libros;
+
+        if (filtroTitulo == null || filtroTitulo.isBlank()) {
+            libros = libroRepository.findByEstatus(Estatus.ACTIVO);
+        } else {
+            libros = libroRepository.findByEstatusAndTituloContainingIgnoreCase(Estatus.ACTIVO, filtroTitulo);
+        }
+
+        return libros.stream().map(libro ->
+                new LibroListadoDTO(
+                		libro.getId(),                        libro.getTitulo(),
+                        libro.getSinopsis(),
+                        libro.getCopiasDisponibles(),
+                        libro.getImagen() != null ?
+                                Base64.getEncoder().encodeToString(libro.getImagen()) : null,
+                        libro.getAutores().stream()
+                                .map(a -> a.getNombre() + " " + a.getApellidoPaterno())
+                                .collect(Collectors.toList())
+                )
+        ).collect(Collectors.toList());
     }
 }
