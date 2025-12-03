@@ -100,36 +100,27 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of(
-            "http://localhost:4200",
-            "http://localhost:8100",
-            "http://localhost:8000",
-            "capacitor://localhost",  
-            "ionic://localhost",  
-            "https://unknown-corrie-utsemintegradora-b23357e2.koyeb.app",
-            "https://pleasant-sara-utsemintegradora-0944b8c7.koyeb.app"
-        ));
-
+        // PARA APK: Permite TODOS los orígenes
+        config.setAllowedOriginPatterns(List.of("*"));
+        
+        // Métodos HTTP permitidos
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
 
-        config.setAllowedHeaders(List.of(
-            "Origin",
-            "Content-Type",
-            "Accept",
-            "Authorization",
-            "X-Requested-With"
-        ));
+        // Headers permitidos
+        config.setAllowedHeaders(List.of("*"));
 
+        // Headers expuestos
         config.setExposedHeaders(List.of("Authorization"));
 
+        // IMPORTANTE: Para APK debe ser true
         config.setAllowCredentials(true);
+        
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
 
     // OpenAPI para Swagger con HTTPS
     @Bean
