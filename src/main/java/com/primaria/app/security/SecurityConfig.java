@@ -104,6 +104,8 @@ public class SecurityConfig {
             "http://localhost:4200",
             "http://localhost:8100",
             "http://localhost:8000",
+            "capacitor://localhost",  
+            "ionic://localhost",  
             "https://unknown-corrie-utsemintegradora-b23357e2.koyeb.app",
             "https://pleasant-sara-utsemintegradora-0944b8c7.koyeb.app"
         ));
