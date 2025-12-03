@@ -22,7 +22,6 @@ public class CategoriaService {
         this.modelMapper = modelMapper;
     }
 
-    // 🔹 Listar todas las categorías
     public List<CategoriaDTO> listarTodas() {
         return categoriaRepository.findAll()
                 .stream()
@@ -30,13 +29,11 @@ public class CategoriaService {
                 .collect(Collectors.toList());
     }
 
-    // 🔹 Obtener una categoría por ID
     public Optional<CategoriaDTO> obtenerPorId(String id) {
         return categoriaRepository.findById(id)
                 .map(categoria -> modelMapper.map(categoria, CategoriaDTO.class));
     }
 
-    // 🔹 Crear una nueva categoría (sin duplicar nombre)
     public CategoriaDTO crear(CategoriaDTO dto) {
         if (categoriaRepository.existsByNombreIgnoreCase(dto.getNombre())) {
             throw new RuntimeException("Ya existe una categoría con ese nombre");
@@ -47,12 +44,10 @@ public class CategoriaService {
         return modelMapper.map(guardada, CategoriaDTO.class);
     }
 
-    // 🔹 Actualizar categoría existente
     public CategoriaDTO actualizar(String id, CategoriaDTO dto) {
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
-        // Validar duplicado si cambia el nombre
         if (!categoria.getNombre().equalsIgnoreCase(dto.getNombre()) &&
             categoriaRepository.existsByNombreIgnoreCase(dto.getNombre())) {
             throw new RuntimeException("Ya existe una categoría con ese nombre");
@@ -63,7 +58,6 @@ public class CategoriaService {
         return modelMapper.map(actualizada, CategoriaDTO.class);
     }
 
-    // 🔹 Eliminar categoría
     public void eliminar(String id) {
         if (!categoriaRepository.existsById(id)) {
             throw new RuntimeException("Categoría no encontrada");

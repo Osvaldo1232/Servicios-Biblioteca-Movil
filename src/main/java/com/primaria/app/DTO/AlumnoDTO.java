@@ -4,7 +4,7 @@ public class AlumnoDTO extends UsuarioDTO {
 
     private String matricula;
   
-    // Getters y Setters
+    
 
     public String getMatricula() {
         return matricula;

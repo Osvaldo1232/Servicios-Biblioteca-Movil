@@ -11,8 +11,6 @@ public class Alumno extends Usuario {
 
    
    
-    
-    // Getters y Setters
 
     public String getMatricula() {
         return matricula;

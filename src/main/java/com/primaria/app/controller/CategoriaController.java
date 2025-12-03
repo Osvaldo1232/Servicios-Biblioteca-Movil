@@ -25,7 +25,6 @@ public class CategoriaController {
         this.categoriaService = categoriaService;
     }
 
-    // 🔹 Listar todas las categorías
     @Operation(summary = "Listar todas las categorías", description = "Devuelve una lista con todas las categorías registradas")
    
     @GetMapping
@@ -34,7 +33,6 @@ public class CategoriaController {
         return ResponseEntity.ok(categorias);
     }
 
-    // 🔹 Obtener categoría por ID
     @Operation(summary = "Obtener categoría por ID", description = "Busca una categoría por su identificador único")
    
     @GetMapping("/{id}")
@@ -44,7 +42,6 @@ public class CategoriaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // 🔹 Crear nueva categoría
     @Operation(summary = "Crear nueva categoría", description = "Agrega una nueva categoría, validando que el nombre no se repita")
    
     @PostMapping
@@ -57,7 +54,6 @@ public class CategoriaController {
         }
     }
 
-    // 🔹 Actualizar categoría
     @Operation(summary = "Actualizar categoría", description = "Modifica el nombre de una categoría existente")
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable String id, @RequestBody CategoriaDTO dto) {
@@ -70,7 +66,6 @@ public class CategoriaController {
         }
     }
 
-    // 🔹 Eliminar categoría
     @Operation(summary = "Eliminar categoría", description = "Elimina una categoría existente por su ID")
    
     @DeleteMapping("/{id}")

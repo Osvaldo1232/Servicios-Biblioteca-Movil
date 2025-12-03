@@ -8,7 +8,7 @@ public class LibroDTO {
     private Integer anioPublicacion;
     private String editorial;
 
-    private Integer totalCopias;       // NUEVO
+    private Integer totalCopias;      
     private Integer copiasDisponibles;
 
     private String categoriaId;
@@ -40,7 +40,6 @@ public class LibroDTO {
         this.autoresIds = autoresIds;
     }
 
-    // Getters y Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

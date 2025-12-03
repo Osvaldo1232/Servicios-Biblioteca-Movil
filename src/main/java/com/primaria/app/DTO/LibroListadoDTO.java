@@ -11,7 +11,6 @@ public class LibroListadoDTO {
     private String imagenBase64;
     private List<String> autores;
 
-    // Constructor
     public LibroListadoDTO(String id, String titulo, String sinopsis, Integer copiasDisponibles,
                            String imagenBase64, List<String> autores) {
     	this.id=id;
@@ -22,7 +21,6 @@ public class LibroListadoDTO {
         this.autores = autores;
     }
 
-    // Getters y setters
     
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

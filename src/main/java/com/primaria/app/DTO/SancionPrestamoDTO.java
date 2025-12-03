@@ -14,7 +14,6 @@ public class SancionPrestamoDTO {
         this.fechaSancion = fechaSancion;
     }
 
-    // Getters y setters
     public String getMotivo() { return motivo; }
     public void setMotivo(String motivo) { this.motivo = motivo; }
 

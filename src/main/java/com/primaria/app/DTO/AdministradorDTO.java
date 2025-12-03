@@ -5,7 +5,7 @@ public class AdministradorDTO extends UsuarioDTO {
     private String departamento;
 
     private String telefono;
-    // Getters y Setters
+    
 
     public String getDepartamento() {
         return departamento;

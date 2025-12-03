@@ -13,7 +13,6 @@ public class Empleado extends Usuario {
 
     
 
-    // Getters y Setters
 
    
 

@@ -16,14 +16,12 @@ public class Categoria {
     @Column(name = "nombre", nullable = false, length = 100, unique = true)
     private String nombre;
 
-    // 🔹 Constructores
     public Categoria() {}
 
     public Categoria(String nombre) {
         this.nombre = nombre;
     }
 
-    // 🔹 Getters y Setters
     public String getId() {
         return id;
     }

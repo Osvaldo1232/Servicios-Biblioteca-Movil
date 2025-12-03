@@ -71,14 +71,11 @@ public List<LibroCategoriaDTO> listarTodos() {
             .collect(Collectors.toList());
 }
 
-
-    // Obtener libro por ID
     public Optional<LibroDTO> obtenerPorId(String id) {
         return libroRepository.findById(id)
                 .map(this::convertirADTO);
     }
 
-    // Crear libro
     public LibroDTO crear(LibroDTO dto) {
 
         Categoria categoria = categoriaRepository.findById(dto.getCategoriaId())
@@ -100,12 +97,10 @@ public List<LibroCategoriaDTO> listarTodos() {
 
         libro.setSinopsis(dto.getSinopsis());
 
-        // Imagen Base64 → byte[]
         if (dto.getImagenBase64() != null && !dto.getImagenBase64().isEmpty()) {
             libro.setImagen(Base64.getDecoder().decode(dto.getImagenBase64()));
         }
 
-        // Autores
         if (dto.getAutoresIds() != null && !dto.getAutoresIds().isEmpty()) {
             List<Autores> autores = autorRepository.findAllById(dto.getAutoresIds());
             libro.setAutores(new HashSet<>(autores));
@@ -116,7 +111,7 @@ public List<LibroCategoriaDTO> listarTodos() {
     }
 
     
-    // Actualizar libro
+    
    
    public LibroDTO actualizar(String id, LibroDTO dto) {
 
@@ -130,14 +125,14 @@ public List<LibroCategoriaDTO> listarTodos() {
     libro.setTotalCopias(dto.getTotalCopias());
     libro.setCopiasDisponibles(dto.getCopiasDisponibles());
 
-    // Categoría
+    
     if (dto.getCategoriaId() != null) {
         Categoria categoria = categoriaRepository.findById(dto.getCategoriaId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
         libro.setCategoria(categoria);
     }
 
-    // Estatus
+ 
     if (dto.getEstatus() != null) {
         libro.setEstatus(Estatus.valueOf(dto.getEstatus().toUpperCase()));
     }
@@ -146,12 +141,11 @@ public List<LibroCategoriaDTO> listarTodos() {
         libro.setSinopsis(dto.getSinopsis());
     }
 
-    // Imagen
+   
     if (dto.getImagenBase64() != null && !dto.getImagenBase64().isEmpty()) {
         libro.setImagen(Base64.getDecoder().decode(dto.getImagenBase64()));
     }
 
-    // Autores
     if (dto.getAutoresIds() != null) {
         List<Autores> autores = autorRepository.findAllById(dto.getAutoresIds());
         libro.setAutores(new HashSet<>(autores));
@@ -162,7 +156,6 @@ public List<LibroCategoriaDTO> listarTodos() {
 }
 
 
-    // Conversión a DTO
    private LibroDTO convertirADTO(Libro libro) {
 	    return new LibroDTO(
 	        libro.getId(),
@@ -180,7 +173,6 @@ public List<LibroCategoriaDTO> listarTodos() {
 	}
 
 
-    // Eliminar libro
     public void eliminar(String id) {
         if (!libroRepository.existsById(id)) {
             throw new RuntimeException("Libro no encontrado");
@@ -188,7 +180,6 @@ public List<LibroCategoriaDTO> listarTodos() {
         libroRepository.deleteById(id);
     }
 
-    // Cambiar estatus
     public LibroDTO cambiarEstatus(String id, String nuevoEstatus) {
         Libro libro = libroRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado"));

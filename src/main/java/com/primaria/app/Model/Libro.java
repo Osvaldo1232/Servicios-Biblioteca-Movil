@@ -29,11 +29,9 @@ public class Libro {
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
-    // 👇 NUEVO: total de copias registradas
     @Column(name = "total_copias", nullable = false)
     private Integer totalCopias;
 
-    // 👇 Cantidad disponible para préstamo/apartado
     @Column(name = "copias_disponibles", nullable = false)
     private Integer copiasDisponibles;
 
@@ -49,11 +47,9 @@ public class Libro {
     )
     private Set<Autores> autores = new HashSet<>();
 
-    // 👇 Nuevo: sinopsis del libro
     @Column(columnDefinition = "TEXT")
     private String sinopsis;
 
-    // 👇 Nuevo: imagen guardada como BLOB
     @Lob
     @Column(name = "imagen", columnDefinition = "LONGBLOB")
     private byte[] imagen;
@@ -77,9 +73,7 @@ public class Libro {
         this.imagen = imagen;
     }
 
-    // =============================
-    // Getters y Setters
-    // =============================
+   
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

@@ -32,7 +32,6 @@ public class PrestamoServiceImpl implements PrestamoService {
         this.sancionRepository=sancionRepository;
     }
 
-    // ---------------- Crear préstamo normal ----------------
     @Transactional
     @Override
     public PrestamoDTO crearPrestamo(PrestamoDTO dto) {
@@ -49,11 +48,9 @@ public class PrestamoServiceImpl implements PrestamoService {
         if (libro.getCopiasDisponibles() == null || libro.getCopiasDisponibles() < dto.getCantidad())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay suficientes copias disponibles");
 
-        // Descontar copias
         libro.setCopiasDisponibles(libro.getCopiasDisponibles() - dto.getCantidad());
         libroRepository.save(libro);
 
-        // Crear y guardar préstamo
         Prestamo prestamo = new Prestamo(usuario, libro, dto.getCantidad(),
                 dto.getFechaDevolucion() != null ? dto.getFechaDevolucion() : LocalDate.now().plusDays(7)); // default 7 días
 
@@ -64,7 +61,6 @@ public class PrestamoServiceImpl implements PrestamoService {
         return convertirADTO(saved);
     }
 
-    // ---------------- Apartar (reserva) ----------------
     @Transactional
     @Override
     public PrestamoDTO apartarLibro(PrestamoDTO dto) {
@@ -77,7 +73,6 @@ public class PrestamoServiceImpl implements PrestamoService {
         if (libro.getCopiasDisponibles() == null || libro.getCopiasDisponibles() < (dto.getCantidad() == null ? 1 : dto.getCantidad()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay copias disponibles para apartar");
 
-        // Descontar copias de inmediato para reservar
         int cantidad = dto.getCantidad() == null ? 1 : dto.getCantidad();
         libro.setCopiasDisponibles(libro.getCopiasDisponibles() - cantidad);
         libroRepository.save(libro);
@@ -90,7 +85,6 @@ public class PrestamoServiceImpl implements PrestamoService {
         return convertirADTO(saved);
     }
 
-    // ---------------- Devolver ----------------
     @Transactional
     @Override
     public PrestamoDTO devolverPrestamo(String prestamoId, Integer cantidadDevuelta) {
@@ -104,16 +98,14 @@ public class PrestamoServiceImpl implements PrestamoService {
         if (cantidadDevuelta > pendiente)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cantidad devuelta mayor a pendiente");
 
-        // Actualizar préstamo
         prestamo.setCantidadDevuelta(prestamo.getCantidadDevuelta() + cantidadDevuelta);
         prestamo.actualizarEstatusPorDevolucion();
 
-        // Actualizar inventario del libro
+
         Libro libro = prestamo.getLibro();
         libro.setCopiasDisponibles(libro.getCopiasDisponibles() + cantidadDevuelta);
         libroRepository.save(libro);
 
-        // Si se completó la devolución, fijar fecha de devolución actual
         if (prestamo.getEstatus() == EstatusPrestamo.DEVUELTO) {
             prestamo.setFechaDevolucion(LocalDate.now());
         }
@@ -122,20 +114,17 @@ public class PrestamoServiceImpl implements PrestamoService {
         return convertirADTO(updated);
     }
 
-    // ---------------- Obtener por id ----------------
     @Override
     public PrestamoDTO obtenerPorId(String id) {
         Prestamo p = prestamoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Préstamo no encontrado"));
 
-        // verificar vencimiento al consultarlo
         p.verificarVencimiento();
         prestamoRepository.save(p);
 
         return convertirADTO(p);
     }
 
-    // ---------------- Listar detalles simples ----------------
     @Override
     public List<PrestamoDetalleDTO> obtenerDetalles() {
         return prestamoRepository.findAll()
@@ -147,7 +136,6 @@ public class PrestamoServiceImpl implements PrestamoService {
                 .collect(Collectors.toList());
     }
 
-    // ---------------- Filtrado (parámetros opcionales) ----------------
     @Override
     public List<PrestamoDetalleDTO> filtrarPrestamos(LocalDate fechaPrestamo,
                                                      LocalDate fechaDevolucion,
@@ -167,7 +155,6 @@ public class PrestamoServiceImpl implements PrestamoService {
                 .collect(Collectors.toList());
     }
 
-    // ---------------- Actualizar estatus vencidos (puede invocarse por cron) ----------------
     @Override
     @Transactional
     public void actualizarEstatusVencidos() {
@@ -194,13 +181,10 @@ public class PrestamoServiceImpl implements PrestamoService {
                     "El préstamo no está en estado APARTADO, no puede confirmarse.");
         }
 
-        // Cambiar a PRESTADO
         prestamo.setEstatus(EstatusPrestamo.PRESTADO);
 
-        // Puedes actualizar la fecha de préstamo al momento que se entrega físicamente
         prestamo.setFechaPrestamo(LocalDate.now());
 
-        // Puedes configurar nueva fecha de devolución (ej. 7 días desde hoy)
         prestamo.setFechaDevolucion(LocalDate.now().plusDays(7));
 
         Prestamo actualizado = prestamoRepository.save(prestamo);
@@ -208,7 +192,6 @@ public class PrestamoServiceImpl implements PrestamoService {
     }
 
 
-    // ---------------- Helpers ----------------
     private PrestamoDTO convertirADTO(Prestamo p) {
         PrestamoDTO dto = new PrestamoDTO();
         dto.setId(p.getId());
@@ -244,21 +227,17 @@ public class PrestamoServiceImpl implements PrestamoService {
         Prestamo prestamo = prestamoRepository.findById(prestamoId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Préstamo no encontrado"));
 
-        // Solo se pueden cancelar préstamos APARTADOS o PRESTADOS antes de ser devueltos
         if (prestamo.getEstatus() == EstatusPrestamo.DEVUELTO || prestamo.getEstatus() == EstatusPrestamo.VENCIDO) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No se puede cancelar un préstamo ya devuelto o vencido");
         }
 
-        // Devolver las copias al inventario
         Libro libro = prestamo.getLibro();
         int cantidadPendiente = prestamo.getCantidad() - prestamo.getCantidadDevuelta();
         libro.setCopiasDisponibles(libro.getCopiasDisponibles() + cantidadPendiente);
         libroRepository.save(libro);
 
-        // Cambiar estatus a CANCELADO (puedes agregarlo en tu enum EstatusPrestamo)
         prestamo.setEstatus(EstatusPrestamo.CANCELADO);
 
-        // Guardar el préstamo actualizado
         Prestamo actualizado = prestamoRepository.save(prestamo);
 
         return convertirADTO(actualizado);
@@ -270,27 +249,23 @@ public class PrestamoServiceImpl implements PrestamoService {
         Prestamo prestamo = prestamoRepository.findById(prestamoId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Préstamo no encontrado"));
 
-        // Solo procesar si ya está vencido
         if (prestamo.getEstatus() == EstatusPrestamo.VENCIDO) {
 
             Libro libro = prestamo.getLibro();
             int cantidadPendiente = prestamo.getCantidad() - prestamo.getCantidadDevuelta();
 
-            // Actualizar inventario
             libro.setCopiasDisponibles(libro.getCopiasDisponibles() + cantidadPendiente);
             libroRepository.save(libro);
 
-            // Registrar devolución tardía
             prestamo.setCantidadDevuelta(prestamo.getCantidad());
             prestamo.setEstatus(EstatusPrestamo.DEVUELTO_TARDIO);
             prestamoRepository.save(prestamo);
 
-            // ➕ Registrar la sanción aquí
             Sancion sancion = new Sancion(prestamo, motivo);
             sancionRepository.save(sancion);
         }
 
-        // Si no es vencido, no hace nada
+        
     }
 
 }

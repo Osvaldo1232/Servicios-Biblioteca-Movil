@@ -9,7 +9,6 @@ public class Administrador extends Usuario {
     private String departamento;
     private String telefono;
 
-    // Getters y Setters
     public String getDepartamento() {
         return departamento;
     }

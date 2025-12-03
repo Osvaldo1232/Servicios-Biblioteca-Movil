@@ -5,7 +5,7 @@ public class CategoriaDTO {
     private String id;
     private String nombre;
 
-    // 🔹 Constructores
+   
     public CategoriaDTO() {}
 
     public CategoriaDTO(String id, String nombre) {
@@ -13,7 +13,6 @@ public class CategoriaDTO {
         this.nombre = nombre;
     }
 
-    // 🔹 Getters y Setters
     public String getId() {
         return id;
     }

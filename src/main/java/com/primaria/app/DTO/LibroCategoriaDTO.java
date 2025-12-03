@@ -32,8 +32,8 @@ public class LibroCategoriaDTO {
             String categoriaId,
             String categoriaNombre,
             String estatus,
-            String imagen,     // <-- NUEVO
-            String sinopsis    // <-- NUEVO
+            String imagen,     
+            String sinopsis   
     ) {
         this.id = id;
         this.titulo = titulo;
@@ -50,7 +50,6 @@ public class LibroCategoriaDTO {
         this.sinopsis = sinopsis;
     }
 
-    // Getters y setters
     
     public String getImagen() { return imagen; }
     public void setImagen(String imagen) { this.imagen = imagen; }

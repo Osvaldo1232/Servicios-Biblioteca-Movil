@@ -52,7 +52,6 @@ public class CarreraService {
     }
 
 
-    // Cambiar estatus
     public CarreraDTO cambiarEstatus(String id, Estatus nuevoEstatus) {
         Carrera carrera = carreraRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Carrera no encontrada con ID: " + id));
@@ -62,7 +61,6 @@ public class CarreraService {
         return convertirADTO(carrera);
     }
 
-    // Listar todas
     public List<CarreraDTO> listarTodas() {
         return carreraRepository.findAll()
                 .stream()

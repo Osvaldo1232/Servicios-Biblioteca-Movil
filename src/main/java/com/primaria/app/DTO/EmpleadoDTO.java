@@ -9,8 +9,7 @@ public class EmpleadoDTO extends UsuarioDTO {
     private String telefono;
     private String clavePresupuestal;
    
-    // Getters y Setters
-
+   
  
     public String getTelefono() {
         return telefono;

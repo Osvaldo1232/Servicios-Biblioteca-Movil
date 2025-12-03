@@ -47,13 +47,11 @@ public class SecurityConfig {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 
-    // Codificador de contraseñas
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Proveedor de autenticación que usa el servicio anterior
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -62,7 +60,6 @@ public class SecurityConfig {
         return provider;
     }
 
-    // Cadena de filtros de seguridad
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -91,7 +88,7 @@ public class SecurityConfig {
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .formLogin(form -> form.disable())
             .httpBasic(httpBasic -> httpBasic.disable())
-            .cors(Customizer.withDefaults()); // <-- usar el nuevo método para habilitar CORS con la configuración definida
+            .cors(Customizer.withDefaults());
 
         return http.build();
     }
@@ -100,19 +97,15 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // PARA APK: Permite TODOS los orígenes
         config.setAllowedOriginPatterns(List.of("*"));
         
-        // Métodos HTTP permitidos
+        
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
 
-        // Headers permitidos
         config.setAllowedHeaders(List.of("*"));
 
-        // Headers expuestos
         config.setExposedHeaders(List.of("Authorization"));
 
-        // IMPORTANTE: Para APK debe ser true
         config.setAllowCredentials(true);
         
         config.setMaxAge(3600L);
@@ -122,7 +115,6 @@ public class SecurityConfig {
         return source;
     }
 
-    // OpenAPI para Swagger con HTTPS
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
@@ -131,7 +123,6 @@ public class SecurityConfig {
                 ));
     }
     
-    // AuthenticationManager para poder usarlo en controladores si se necesita
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);

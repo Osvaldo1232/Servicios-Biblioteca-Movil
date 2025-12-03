@@ -31,7 +31,6 @@ public class AutorService {
         return convertirADTO(autor);
     }
 
-    // Listar todos los autores
     public List<AutorDTO> listarTodos() {
         return autorRepository.findAll()
                 .stream()
@@ -39,7 +38,6 @@ public class AutorService {
                 .collect(Collectors.toList());
     }
 
-    // Editar autor existente
     public AutorDTO editarAutor(String id, AutorDTO dto) {
         Optional<Autores> optionalAutor = autorRepository.findById(id);
 
@@ -58,7 +56,6 @@ public class AutorService {
         return convertirADTO(autor);
     }
 
-    // Conversión de entidad a DTO
     private AutorDTO convertirADTO(Autores autor) {
         return new AutorDTO(
                 autor.getId(),

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EmpleadoRepository extends JpaRepository<Empleado, String> {
-    // Puedes agregar consultas personalizadas si es necesario
-	
+    
 	List<Empleado> findByRol(Rol rol);
 }

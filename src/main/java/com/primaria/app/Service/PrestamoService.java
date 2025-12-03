@@ -9,11 +9,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PrestamoService {
-    PrestamoDTO crearPrestamo(PrestamoDTO dto);            // crear préstamo normal
-    PrestamoDTO apartarLibro(PrestamoDTO dto);             // crear apartado (reserva)
-    PrestamoDTO devolverPrestamo(String prestamoId, Integer cantidadDevuelta); // devolver
+    PrestamoDTO crearPrestamo(PrestamoDTO dto);           
+    PrestamoDTO apartarLibro(PrestamoDTO dto);             
+    PrestamoDTO devolverPrestamo(String prestamoId, Integer cantidadDevuelta); 
     PrestamoDTO obtenerPorId(String id);
-    List<PrestamoDetalleDTO> obtenerDetalles();            // lista completa con detalles
+    List<PrestamoDetalleDTO> obtenerDetalles();           
     
     PrestamoDTO confirmarApartado(String prestamoId);
 
@@ -24,7 +24,7 @@ public interface PrestamoService {
                                               String usuarioNombre,
                                               String libroTitulo,
                                               EstatusPrestamo estatus);
-    void actualizarEstatusVencidos();                      // marcar vencidos (cron o manual)
+    void actualizarEstatusVencidos();                      
     
     
     

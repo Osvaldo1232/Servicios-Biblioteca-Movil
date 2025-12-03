@@ -9,5 +9,5 @@ import com.primaria.app.Model.Administrador;
 
 @Repository
 public interface AdministradorRepository extends JpaRepository<Administrador, String> {
-    // Puedes agregar consultas personalizadas si es necesario
+  
 }

@@ -50,15 +50,11 @@ public class AuthController {
     
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-    	 System.out.println("=== PETICIÓN DE LOGIN ===");
-    	    System.out.println("Email recibido: " + loginRequest.getEmail());
-    	    System.out.println("Password recibido: " + loginRequest.getPassword());
-    	    System.out.println("========================");
+    	
         try {
             Usuario usuario = usuarioService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
             String token = jwtUtil.generateToken(usuario.getId(), usuario.getRol().name());
             
-            System.out.println("Email recibido: " + usuario.getEmail());
             return ResponseEntity.ok(Map.of(
                     "token", token,
                     "rol", usuario.getRol().name(),

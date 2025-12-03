@@ -16,7 +16,7 @@ public class UsuarioDTO {
     private Sexo sexo; 
 
     private Estatus estatus;
-    // 🔹 Getters y Setters
+  
     public String getId() {
         return id;
     }

@@ -15,7 +15,6 @@ public class PrestamoScheduler {
         this.prestamoService = prestamoService;
     }
 
-    // Ejecutar todos los días a las 00:10
     @Scheduled(cron = "0 10 0 * * *")
     public void marcarVencidosDiario() {
         prestamoService.actualizarEstatusVencidos();

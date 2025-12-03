@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AlumnoRepository extends JpaRepository<Alumno, String> {
-    // Puedes agregar consultas personalizadas si es necesario
 	Optional<Alumno> findByMatricula(String matricula);
 	void deleteByMatricula(String matricula);
 	Optional<Alumno> findById(String id);

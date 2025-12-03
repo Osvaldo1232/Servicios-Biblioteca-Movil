@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, String> {
-    // Puedes agregar consultas personalizadas si es necesario
 	Optional<Usuario> findByEmail(String email);
 	List<Usuario> findByRol(Rol rol);
 	List<Usuario> findByEstatus(Estatus estatus);
