@@ -39,6 +39,7 @@ public class PrestamoServices {
 
         return prestamos.stream().map(p ->
                 new PrestamoUsuarioDTO(
+                		p.getId(),
                         p.getLibro().getTitulo(),
                         p.getLibro().getImagen(),
                         p.getCantidad(),

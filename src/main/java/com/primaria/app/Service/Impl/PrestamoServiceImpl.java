@@ -21,13 +21,15 @@ public class PrestamoServiceImpl implements PrestamoService {
     private final PrestamoRepository prestamoRepository;
     private final UsuarioRepository usuarioRepository;
     private final LibroRepository libroRepository;
+    private final SancionRepository sancionRepository;
 
     public PrestamoServiceImpl(PrestamoRepository prestamoRepository,
                                UsuarioRepository usuarioRepository,
-                               LibroRepository libroRepository) {
+                               LibroRepository libroRepository, SancionRepository sancionRepository) {
         this.prestamoRepository = prestamoRepository;
         this.usuarioRepository = usuarioRepository;
         this.libroRepository = libroRepository;
+        this.sancionRepository=sancionRepository;
     }
 
     // ---------------- Crear préstamo normal ----------------
@@ -172,7 +174,7 @@ public class PrestamoServiceImpl implements PrestamoService {
         List<Prestamo> todos = prestamoRepository.findAll();
         LocalDate hoy = LocalDate.now();
         for (Prestamo p : todos) {
-            if (p.getEstatus() != EstatusPrestamo.DEVUELTO && p.getEstatus() != EstatusPrestamo.DEVUELTO
+            if (p.getEstatus() != EstatusPrestamo.DEVUELTO_TARDIO && p.getEstatus() != EstatusPrestamo.DEVUELTO_TARDIO
                     && p.getFechaDevolucion() != null && p.getFechaDevolucion().isBefore(hoy)) {
                 p.setEstatus(EstatusPrestamo.VENCIDO);
                 prestamoRepository.save(p);
@@ -260,6 +262,35 @@ public class PrestamoServiceImpl implements PrestamoService {
         Prestamo actualizado = prestamoRepository.save(prestamo);
 
         return convertirADTO(actualizado);
+    }
+    @Override
+    @Transactional
+    public void actualizarEstatusVencido(String prestamoId, String motivo) {
+
+        Prestamo prestamo = prestamoRepository.findById(prestamoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Préstamo no encontrado"));
+
+        // Solo procesar si ya está vencido
+        if (prestamo.getEstatus() == EstatusPrestamo.VENCIDO) {
+
+            Libro libro = prestamo.getLibro();
+            int cantidadPendiente = prestamo.getCantidad() - prestamo.getCantidadDevuelta();
+
+            // Actualizar inventario
+            libro.setCopiasDisponibles(libro.getCopiasDisponibles() + cantidadPendiente);
+            libroRepository.save(libro);
+
+            // Registrar devolución tardía
+            prestamo.setCantidadDevuelta(prestamo.getCantidad());
+            prestamo.setEstatus(EstatusPrestamo.DEVUELTO_TARDIO);
+            prestamoRepository.save(prestamo);
+
+            // ➕ Registrar la sanción aquí
+            Sancion sancion = new Sancion(prestamo, motivo);
+            sancionRepository.save(sancion);
+        }
+
+        // Si no es vencido, no hace nada
     }
 
 }

@@ -28,5 +28,6 @@ public interface PrestamoService {
     
     
     
-    
+    public void actualizarEstatusVencido(String prestamoId, String motivo);
+
 }

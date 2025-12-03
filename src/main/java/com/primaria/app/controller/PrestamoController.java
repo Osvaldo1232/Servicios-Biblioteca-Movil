@@ -6,9 +6,11 @@ import com.primaria.app.DTO.PrestamoDTO;
 import com.primaria.app.DTO.PrestamoDetalleDTO;
 import com.primaria.app.DTO.PrestamoUsuarioDTO;
 import com.primaria.app.DTO.PrestamosResumenDTO;
+import com.primaria.app.DTO.SancionPrestamoDTO;
 import com.primaria.app.Model.EstatusPrestamo;
 import com.primaria.app.Service.PrestamoService;
 import com.primaria.app.Service.PrestamoServices;
+import com.primaria.app.Service.SancionService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +36,8 @@ public class PrestamoController {
 	@Autowired
     private  PrestamoServices prestamoServices;
 
-  
+	@Autowired
+    private  SancionService sancionService;
    
     
     @Operation(
@@ -176,5 +179,25 @@ public class PrestamoController {
     public ResponseEntity<PrestamoDTO> cancelarPrestamo(@PathVariable String id) {
         return ResponseEntity.ok(prestamoService.cancelarPrestamo(id));
     }
+    
+    @PostMapping("/actualizar-vencido/{id}")
+    public ResponseEntity<Void> actualizarVencido(
+            @PathVariable("id") String prestamoId,
+            @RequestParam String motivo) {
 
+
+        prestamoService.actualizarEstatusVencido(prestamoId, motivo);
+        return ResponseEntity.ok().build();
+    }
+
+    
+    @GetMapping("/info/{prestamoId}")
+    
+    @Operation(
+            summary = "Obtener sancion por prestamos",
+            description = "Regresa informacion de la sanción por prestamos"
+    )
+    public List<SancionPrestamoDTO> getSancionesPorPrestamo(@PathVariable String prestamoId) {
+        return sancionService.obtenerSancionesPorPrestamo(prestamoId);
+    }
 }

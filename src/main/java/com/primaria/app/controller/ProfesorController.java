@@ -1,4 +1,4 @@
-package com.primaria.app.controller;
+	package com.primaria.app.controller;
 
 import java.util.List;
 
@@ -13,8 +13,10 @@ import com.primaria.app.DTO.AlumnoDTO;
 import com.primaria.app.DTO.EmpleadoDTO;
 import com.primaria.app.Model.Alumno;
 import com.primaria.app.Model.Empleado;
+import com.primaria.app.Model.Rol;
 import com.primaria.app.Model.Usuario;
 import com.primaria.app.Service.UsuarioService;
+import com.primaria.app.repository.EmpleadoRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,20 +29,29 @@ public class ProfesorController {
     
     private final UsuarioService usuarioService;
     
-    public ProfesorController(UsuarioService usuarioService) {
+    private final EmpleadoRepository empleadoRepository;
+    
+    public ProfesorController(UsuarioService usuarioService, EmpleadoRepository empleadoRepository) {
         this.usuarioService = usuarioService;
+        this.empleadoRepository=empleadoRepository;
     }
     
+    
     @GetMapping
-    @Operation(summary = "Obtener todos los empleados")
-    public ResponseEntity<List<Empleado>> obtenerProfesores() {
-        List<Usuario> usuarios = usuarioService.findAll();
-        List<Empleado> profesores = usuarios.stream()
-            .filter(u -> u instanceof Empleado)
-            .map(u -> (Empleado) u)
-            .collect(Collectors.toList());
-        return ResponseEntity.ok(profesores);
+    @Operation(summary = "Obtener todos los empleados por rol")
+    public ResponseEntity<List<Empleado>> obtenerEmpleadosPorRol() {
+        List<Empleado> empleados = empleadoRepository.findByRol(Rol.EMPLEADO);
+        return ResponseEntity.ok(empleados);
     }
+
+    
+    @GetMapping("/profesores")
+    @Operation(summary = "Obtener todos los empleados por rol")
+    public ResponseEntity<List<Empleado>> obtenerProfesoresPorRol() {
+        List<Empleado> empleados = empleadoRepository.findByRol(Rol.MAESTRO);
+        return ResponseEntity.ok(empleados);
+    }
+    
     @PutMapping("/empleado/{id}")
     @Operation(summary = " Actualizar Empleado")
     public ResponseEntity<?> actualizarProfesor(@PathVariable String id, @RequestBody EmpleadoDTO dto) {

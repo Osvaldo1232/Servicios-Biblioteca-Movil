@@ -6,6 +6,7 @@ public enum EstatusPrestamo {
     VENCIDO,
     SIN_ENTREGAR,
     APARTADO,
-    CANCELADO
+    CANCELADO,
+    DEVUELTO_TARDIO
     
 }
