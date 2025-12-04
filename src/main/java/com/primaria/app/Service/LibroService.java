@@ -237,4 +237,43 @@ public List<LibroCategoriaDTO> listarTodos() {
                 )
         ).collect(Collectors.toList());
     }
+    
+    
+    public List<LibroCategoriaDTO> obtenerLibrosPorCategoria(String categoriaId) {
+        List<Libro> libros = libroRepository.findByCategoria_Id(categoriaId);
+
+        return libros.stream().map(libro -> {
+            List<String> autoresNombres = libro.getAutores()
+                                               .stream()
+                                               .map(a -> a.getNombre())
+                                               .collect(Collectors.toList());
+
+            List<String> autoresIds = libro.getAutores()
+                                           .stream()
+                                           .map(a -> a.getId())
+                                           .collect(Collectors.toList());
+
+            String imagenBase64 = null;
+            if (libro.getImagen() != null) {
+                imagenBase64 = Base64.getEncoder().encodeToString(libro.getImagen());
+            }
+
+            return new LibroCategoriaDTO(
+                    libro.getId(),
+                    libro.getTitulo(),
+                    autoresNombres,
+                    autoresIds,
+                    libro.getAnioPublicacion(),
+                    libro.getEditorial(),
+                    libro.getTotalCopias(),
+                    libro.getCopiasDisponibles(),
+                    libro.getCategoria().getId(),
+                    libro.getCategoria().getNombre(),
+                    libro.getEstatus().name(),
+                    imagenBase64,
+                    libro.getSinopsis()
+            );
+        }).collect(Collectors.toList());
+    }
+
 }

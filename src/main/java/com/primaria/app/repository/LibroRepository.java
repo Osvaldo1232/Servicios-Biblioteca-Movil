@@ -13,4 +13,7 @@ public interface LibroRepository   extends JpaRepository<Libro, String>{
 	 List<Libro> findByEstatus(Estatus estatus);
 	 List<Libro> findByEstatusAndCopiasDisponiblesGreaterThanEqual(Estatus estatus, Integer copias);
 	 List<Libro> findByEstatusAndTituloContainingIgnoreCase(Estatus estatus, String titulo);
+	 
+	 
+	 List<Libro> findByCategoria_Id(String categoriaId);
 }

@@ -4,6 +4,7 @@ import com.primaria.app.DTO.LibroActivoDTO;
 import com.primaria.app.DTO.LibroCategoriaDTO;
 import com.primaria.app.DTO.LibroDTO;
 import com.primaria.app.DTO.LibroListadoDTO;
+import com.primaria.app.Model.Libro;
 import com.primaria.app.Service.LibroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -84,5 +85,15 @@ public class LibroController {
     ) {
         return libroService.listarLibrosActivos(titulo);
     }
+    @Operation(
+            summary = "Listar libros con parametro de categoria",
+            description = "Devuelve solo libros que pertenencen a una categoria"
+    )
+    
+    @GetMapping("/categoria/{idCategoria}")
+    public List<LibroCategoriaDTO> obtenerPorCategoria(@PathVariable String idCategoria) {
+        return libroService.obtenerLibrosPorCategoria(idCategoria);
+    }
+
 }
 
