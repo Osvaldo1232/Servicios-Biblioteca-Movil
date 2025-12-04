@@ -152,10 +152,14 @@ public class UsuarioService {
         List<Usuario> usuarios = usuarioRepository.findByEstatus(Estatus.ACTIVO);
 
         return usuarios.stream()
+                .filter(u -> u.getRol() == Rol.MAESTRO || u.getRol() == Rol.ALUMNO)
+               
                 .map(u -> new LibroActivoDTO(
                         u.getId(),
                         u.getNombre() + " " + u.getApellidoPaterno() + " " + u.getApellidoMaterno()
                 ))
                 .collect(Collectors.toList());
     }
+
+
 }
