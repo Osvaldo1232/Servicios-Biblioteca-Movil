@@ -130,11 +130,15 @@ public class PrestamoServiceImpl implements PrestamoService {
         return prestamoRepository.findAll()
                 .stream()
                 .peek(p -> {
-                    p.verificarVencimiento();
+                    if (p.getEstatus() == EstatusPrestamo.PRESTADO) {
+                        p.verificarVencimiento();
+                    }
                 })
                 .map(this::toDetalleDTO)
                 .collect(Collectors.toList());
     }
+
+
 
     @Override
     public List<PrestamoDetalleDTO> filtrarPrestamos(LocalDate fechaPrestamo,
@@ -242,30 +246,36 @@ public class PrestamoServiceImpl implements PrestamoService {
 
         return convertirADTO(actualizado);
     }
-    @Override
-    @Transactional
-    public void actualizarEstatusVencido(String prestamoId, String motivo) {
+   @Override
+@Transactional
+public void actualizarEstatusVencido(String prestamoId, String motivo) {
 
-        Prestamo prestamo = prestamoRepository.findById(prestamoId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Préstamo no encontrado"));
+    Prestamo prestamo = prestamoRepository.findById(prestamoId)
+            .orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND, "Préstamo no encontrado"));
 
-        if (prestamo.getEstatus() == EstatusPrestamo.VENCIDO) {
+    if (prestamo.getEstatus() == EstatusPrestamo.PRESTADO &&
+        prestamo.getFechaDevolucion().isBefore(LocalDate.now())) {
 
-            Libro libro = prestamo.getLibro();
-            int cantidadPendiente = prestamo.getCantidad() - prestamo.getCantidadDevuelta();
-
-            libro.setCopiasDisponibles(libro.getCopiasDisponibles() + cantidadPendiente);
-            libroRepository.save(libro);
-
-            prestamo.setCantidadDevuelta(prestamo.getCantidad());
-            prestamo.setEstatus(EstatusPrestamo.DEVUELTO_TARDIO);
-            prestamoRepository.save(prestamo);
-
-            Sancion sancion = new Sancion(prestamo, motivo);
-            sancionRepository.save(sancion);
-        }
-
-        
+        prestamo.setEstatus(EstatusPrestamo.VENCIDO);
     }
+
+    if (prestamo.getEstatus() == EstatusPrestamo.VENCIDO) {
+
+        Libro libro = prestamo.getLibro();
+        int cantidadPendiente = prestamo.getCantidad() - prestamo.getCantidadDevuelta();
+
+        libro.setCopiasDisponibles(libro.getCopiasDisponibles() + cantidadPendiente);
+        libroRepository.save(libro);
+
+        prestamo.setCantidadDevuelta(prestamo.getCantidad());
+        prestamo.setEstatus(EstatusPrestamo.DEVUELTO_TARDIO);
+        prestamoRepository.save(prestamo);
+
+        Sancion sancion = new Sancion(prestamo, motivo);
+        sancionRepository.save(sancion);
+    }
+}
+
 
 }

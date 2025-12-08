@@ -74,13 +74,16 @@ public class Prestamo {
 
  
     public void verificarVencimiento() {
-        if (this.estatus != EstatusPrestamo.DEVUELTO &&
-            this.estatus != EstatusPrestamo.DEVUELTO &&
-            this.fechaDevolucion.isBefore(LocalDate.now())) {
 
+        if (this.estatus != EstatusPrestamo.PRESTADO) {
+            return;
+        }
+        if (this.fechaDevolucion.isBefore(LocalDate.now())) {
             this.estatus = EstatusPrestamo.VENCIDO;
         }
     }
+
+
 
     public boolean estaDevueltoCompletamente() {
         return this.cantidadDevuelta >= this.cantidad;
