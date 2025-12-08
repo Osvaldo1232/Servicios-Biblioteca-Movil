@@ -14,17 +14,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PrestamoRepository extends JpaRepository<Prestamo, String> {
 	
-	List<Prestamo> findByEstatus(EstatusPrestamo estatus);
 	@Query("""
 		    SELECT new com.primaria.app.DTO.PrestamosResumenDTO(
 		        p.fechaPrestamo,
 		        SUM(p.cantidad)
 		    )
 		    FROM Prestamo p
-		    GROUP BY p.libro.titulo, p.fechaPrestamo
-		    ORDER BY SUM(p.cantidad) DESC
+		    GROUP BY p.fechaPrestamo
+		    ORDER BY p.fechaPrestamo DESC
 		""")
-		List<PrestamosResumenDTO> obtenerTop10FechasConMasPrestamos();
+		List<PrestamosResumenDTO> obtenerFechasOrdenadas();
+
+
 	
 	
 	 @Query("""
